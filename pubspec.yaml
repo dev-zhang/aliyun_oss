@@ -1,8 +1,8 @@
 name: aliyun_oss
 description: A new Flutter package project.
 version: 0.0.1
-author:
-homepage:
+author: ZhangYu
+homepage: https://github.com/dev-zhang/aliyun_oss
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
