@@ -1,7 +1,8 @@
 library aliyun_oss;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/oss_client.dart';
+export 'src/oss_credential.dart';
+export 'src/oss_credential_provider.dart';
+export 'src/oss_response.dart';
+export 'src/sign_util.dart';
+export 'src/utils.dart';
