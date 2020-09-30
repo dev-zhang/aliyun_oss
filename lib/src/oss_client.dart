@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aliyun_oss/aliyun_oss.dart';
+import 'package:aliyun_oss/src/object_acl.dart';
 import 'package:aliyun_oss/src/oss_credential.dart';
 import 'package:aliyun_oss/src/oss_credential_provider.dart';
 import 'package:aliyun_oss/src/oss_response.dart';
@@ -59,8 +60,10 @@ class OSSClient {
   Future<OSSResponse> postObjectWithFile(
     File file,
     String bucketName,
-    String fileKey,
-  ) async {
+    String fileKey, {
+    ObjectACL acl = ObjectACL.inherited,
+  }) async {
+    assert(acl != null, "ACL不能为空");
     final OSSCredential credential = await credentialProvider.getCredential();
 
     FormData formData = FormData.fromMap({
@@ -77,6 +80,8 @@ class OSSClient {
       'signature': SignUtil.getSignature(credential.accessKeySecret),
       //临时用户授权时必须，需要携带后台返回的security-token
       'x-oss-security-token': credential.securityToken,
+      // 指定OSS创建Object时的访问权限
+      'x-oss-object-acl': acl.parameter,
       'file': await MultipartFile.fromFile(file.path),
     });
 
