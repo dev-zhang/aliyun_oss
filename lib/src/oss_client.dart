@@ -7,16 +7,14 @@ import 'package:aliyun_oss/src/oss_credential_provider.dart';
 import 'package:aliyun_oss/src/oss_response.dart';
 import 'package:aliyun_oss/src/sign_util.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 
 import 'dio_util.dart';
 
 class OSSClient {
   OSSClient({
-    @required this.endpoint,
-    @required this.credentialProvider,
-  })  : assert(endpoint?.isNotEmpty ?? false),
-        assert(credentialProvider != null);
+    required this.endpoint,
+    required this.credentialProvider,
+  }) : assert(endpoint.isNotEmpty);
 
   final String endpoint;
   final OSSAuthCredentialProvider credentialProvider;
@@ -39,13 +37,13 @@ class OSSClient {
       'OSSAccessKeyId': credential.accessKeyId,
       //让服务端返回200，不然，默认会返回204
       'success_action_status': '200',
-      'signature': SignUtil.getSignature(credential.accessKeySecret),
+      'signature': SignUtil.getSignature(credential.accessKeySecret!),
       //临时用户授权时必须，需要携带后台返回的security-token
       'x-oss-security-token': credential.securityToken,
       'file': MultipartFile.fromBytes(fileData),
     });
 
-    final dio = DioUtil.getDio();
+    final dio = DioUtil.getDio()!;
     final res = await dio.post(
       'https://$bucketName.$endpoint',
       options: Options(
@@ -63,7 +61,6 @@ class OSSClient {
     String fileKey, {
     ObjectACL acl = ObjectACL.inherited,
   }) async {
-    assert(acl != null, "ACL不能为空");
     final OSSCredential credential = await credentialProvider.getCredential();
 
     FormData formData = FormData.fromMap({
@@ -77,7 +74,7 @@ class OSSClient {
       'OSSAccessKeyId': credential.accessKeyId,
       //让服务端返回200，不然，默认会返回204
       'success_action_status': '200',
-      'signature': SignUtil.getSignature(credential.accessKeySecret),
+      'signature': SignUtil.getSignature(credential.accessKeySecret!),
       //临时用户授权时必须，需要携带后台返回的security-token
       'x-oss-security-token': credential.securityToken,
       // 指定OSS创建Object时的访问权限
@@ -85,7 +82,7 @@ class OSSClient {
       'file': await MultipartFile.fromFile(file.path),
     });
 
-    final dio = DioUtil.getDio();
+    final dio = DioUtil.getDio()!;
     final res = await dio.post(
       'https://$bucketName.$endpoint',
       options: Options(

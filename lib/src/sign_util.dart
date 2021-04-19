@@ -8,7 +8,7 @@ class SignUtil {
       '{"expiration": "2099-01-01T12:00:00.000Z","conditions": [["content-length-range", 0, 1048576000]]}';
 
   static String getBase64Policy() {
-    assert(policyText?.isNotEmpty ?? false);
+    assert(policyText.isNotEmpty);
     //进行utf8编码
     List<int> policyTextUtf8 = utf8.encode(policyText);
 
@@ -18,7 +18,7 @@ class SignUtil {
   }
 
   static String getSignature(String accessKeySecret) {
-    assert(accessKeySecret?.isNotEmpty ?? false);
+    assert(accessKeySecret.isNotEmpty);
     final base64Policy = getBase64Policy();
     //再次进行utf8编码
     List<int> policy = utf8.encode(base64Policy);

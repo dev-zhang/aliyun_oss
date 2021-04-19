@@ -19,16 +19,12 @@ extension ObjectACLExtension on ObjectACL {
     switch (this) {
       case ObjectACL.publicReadWrite:
         return 'public-read-write';
-        break;
       case ObjectACL.publicRead:
         return 'public-read';
-        break;
       case ObjectACL.private:
         return 'private';
-        break;
       case ObjectACL.inherited:
         return 'default';
-        break;
       default:
         return '';
     }

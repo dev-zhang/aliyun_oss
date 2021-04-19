@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
         title: Text('aliyun oss'),
       ),
       body: Center(
-        child: FlatButton.icon(
+        child: TextButton.icon(
           onPressed: () {
             _upload(context);
           },

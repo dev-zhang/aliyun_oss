@@ -10,7 +10,7 @@ void main() {
   final OSSAuthCredentialProvider _provider = OSSAuthCredentialProvider.init(
     authServerUrl: 'https://xxx/getStsToken',
     fetcher: (authServerUrl) async {
-      final dio = DioUtil.getDio();
+      final dio = DioUtil.getDio()!;
       final r = await dio.post('https://xx/getStsToken');
       return jsonDecode(r.data);
     },

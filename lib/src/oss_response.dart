@@ -7,8 +7,8 @@ class OSSResponse {
     this.fileKey,
   );
 
-  int statusCode;
-  String statusMessage;
+  int? statusCode;
+  String? statusMessage;
 
   /// OSS存储的Object的key
   String fileKey;

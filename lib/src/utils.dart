@@ -84,7 +84,7 @@ String httpDateNow() {
   return "$dts GMT";
 }
 
-String contentTypeByFilename(String filename) {
+String? contentTypeByFilename(String filename) {
   final seqs = filename.split('.');
   final ext = seqs[seqs.length - 1];
   return _EXTRA_TYPES_MAP['.$ext'];
