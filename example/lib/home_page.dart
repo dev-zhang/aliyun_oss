@@ -59,6 +59,6 @@ class _HomePageState extends State<HomePage> {
     File file = File(filePath);
 
     final bytes = await file.readAsBytes();
-    _client.postObject(bytes, 'bucket_name', 'redmi-note7.jpg');
+    _client.postObjectWithBytes(bytes, 'bucket_name', 'redmi-note7.jpg');
   }
 }

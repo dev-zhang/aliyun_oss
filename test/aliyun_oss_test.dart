@@ -23,6 +23,6 @@ void main() {
   test('test client', () async {
     File file = File('xx/Pictures/redmi-note7.jpg');
     final bytes = await file.readAsBytes();
-    _client.postObject(bytes, 'bucket_name', 'redmi-note7.jpg');
+    _client.postObjectWithBytes(bytes, 'bucket_name', 'redmi-note7.jpg');
   });
 }
