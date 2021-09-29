@@ -20,7 +20,7 @@ class DioUtil {
       //   // return HttpClient();
       // };
 
-      final kReleaseMode =
+      const kReleaseMode =
           bool.fromEnvironment('dart.vm.product', defaultValue: false);
       const bool kProfileMode =
           bool.fromEnvironment('dart.vm.profile', defaultValue: false);

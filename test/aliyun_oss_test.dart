@@ -6,7 +6,7 @@ import 'package:aliyun_oss/src/oss_client.dart';
 import 'package:aliyun_oss/src/oss_credential_provider.dart';
 import 'package:test/test.dart';
 
-void main() async {
+void main() {
   final OSSAuthCredentialProvider _provider = OSSAuthCredentialProvider.init(
     authServerUrl: 'https://xxx/getStsToken',
     fetcher: (authServerUrl) async {
