@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 class DioUtil {
   static Dio? _dio;
@@ -21,8 +20,14 @@ class DioUtil {
       //   // return HttpClient();
       // };
 
+      final kReleaseMode =
+          bool.fromEnvironment('dart.vm.product', defaultValue: false);
+      const bool kProfileMode =
+          bool.fromEnvironment('dart.vm.profile', defaultValue: false);
+
       _dio!.interceptors.addAll([
-        if (kDebugMode) LogInterceptor(responseBody: true, requestBody: true),
+        if (!kReleaseMode && !kProfileMode)
+          LogInterceptor(responseBody: true, requestBody: true),
       ]);
     }
     return _dio;
