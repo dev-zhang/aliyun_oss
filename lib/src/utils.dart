@@ -1,9 +1,8 @@
 library aliyun_oss.utils;
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:crypto/crypto.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 const _EXTRA_TYPES_MAP = {
   ".aac": "audio/aac",
@@ -78,10 +77,7 @@ const _EXTRA_TYPES_MAP = {
 
 String httpDateNow() {
   final dt = new DateTime.now();
-  initializeDateFormatting();
-  final formatter = new DateFormat('EEE, dd MMM yyyy HH:mm:ss', 'en_ISO');
-  final dts = formatter.format(dt.toUtc());
-  return "$dts GMT";
+  return HttpDate.format(dt);
 }
 
 String? contentTypeByFilename(String filename) {

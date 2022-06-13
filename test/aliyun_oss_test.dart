@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:aliyun_oss/src/dio_util.dart';
 import 'package:aliyun_oss/src/oss_client.dart';
 import 'package:aliyun_oss/src/oss_credential_provider.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 
 void main() {
   final OSSAuthCredentialProvider _provider = OSSAuthCredentialProvider.init(
