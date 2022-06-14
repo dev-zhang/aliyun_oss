@@ -76,7 +76,7 @@ const _EXTRA_TYPES_MAP = {
 };
 
 String httpDateNow() {
-  final dt = new DateTime.now();
+  final dt = DateTime.now();
   return HttpDate.format(dt);
 }
 
@@ -87,7 +87,7 @@ String? contentTypeByFilename(String filename) {
 }
 
 String hmacSign(String secret, String raw) {
-  var hmac = new Hmac(sha1, utf8.encode(secret));
+  var hmac = Hmac(sha1, utf8.encode(secret));
   final digest = hmac.convert(utf8.encode(raw));
   return base64Encode(digest.bytes);
 }

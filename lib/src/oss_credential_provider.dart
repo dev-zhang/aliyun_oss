@@ -10,7 +10,7 @@ class OSSAuthCredentialProvider {
   OSSAuthCredentialProvider.init({
     required String authServerUrl,
     required FederationCredentialFetcher fetcher,
-  })   : assert(authServerUrl.isNotEmpty),
+  })  : assert(authServerUrl.isNotEmpty),
         _authServerUrl = authServerUrl,
         _fetcher = fetcher;
 
@@ -39,7 +39,6 @@ class OSSAuthCredentialProvider {
     final Map<String, dynamic> json =
         await (_fetcher(_authServerUrl) as FutureOr<Map<String, dynamic>>);
 
-    // FIXME: 测试
     final expiration = json['Expiration'].replaceAll(' UTC', '');
     OSSCredential credential = OSSCredential(
       accessKeyId: json['AccessKeyId'],

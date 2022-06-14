@@ -28,7 +28,7 @@ class SignUtil {
 
     //通过hmac,使用sha1进行加密
     List<int> signaturePre =
-        new Hmac(sha1, utf8AccessKeySecret).convert(policy).bytes;
+        Hmac(sha1, utf8AccessKeySecret).convert(policy).bytes;
 
     //最后一步，将上述所得进行base64 编码
     String signature = base64.encode(signaturePre);

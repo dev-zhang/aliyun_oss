@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +7,8 @@ import 'package:aliyun_oss/aliyun_oss.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -22,7 +26,7 @@ class _HomePageState extends State<HomePage> {
       };
     },
   );
-  OSSClient _client;
+  late OSSClient _client;
 
   @override
   void initState() {
@@ -37,15 +41,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('aliyun oss'),
+        title: const Text('aliyun oss'),
       ),
       body: Center(
         child: TextButton.icon(
           onPressed: () {
             _upload(context);
           },
-          icon: Icon(Icons.cloud_upload),
-          label: Text('upload'),
+          icon: const Icon(Icons.cloud_upload),
+          label: const Text('upload'),
         ),
       ),
     );

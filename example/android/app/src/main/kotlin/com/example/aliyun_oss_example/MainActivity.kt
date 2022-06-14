@@ -1,4 +1,4 @@
-package com.example.example
+package com.example.aliyun_oss_example
 
 import io.flutter.embedding.android.FlutterActivity
 

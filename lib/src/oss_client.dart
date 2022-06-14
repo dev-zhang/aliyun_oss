@@ -2,11 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:aliyun_oss/aliyun_oss.dart';
-import 'package:aliyun_oss/src/object_acl.dart';
-import 'package:aliyun_oss/src/oss_credential.dart';
-import 'package:aliyun_oss/src/oss_credential_provider.dart';
-import 'package:aliyun_oss/src/oss_response.dart';
-import 'package:aliyun_oss/src/sign_util.dart';
 import 'package:dio/dio.dart';
 
 import 'dio_util.dart';
