@@ -2,8 +2,11 @@
 
 import 'dart:io';
 
+import 'package:aliyun_oss_example/component/list_card.dart';
+import 'package:aliyun_oss_example/oss_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:aliyun_oss/aliyun_oss.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,24 +17,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final OSSAuthCredentialProvider _provider = OSSAuthCredentialProvider.init(
-    authServerUrl: 'https://xx/getStsToken',
-    fetcher: (authServerUrl) async {
-      return <String, dynamic>{
-        "AccessKeyId": "STS.NTcQ5yT1ZzbJmzTdRVx1X4nvP",
-        "AccessKeySecret": "BstrQQYJWzcCsjVpZ3QJ2yPC5w3syAqTzvKF5nMeLy7u",
-        "SecurityToken":
-            "CAIS4gF1q6Ft5B2yfSjIr5fWGo/Nue57zaChb1zlgFIDdL5026vdsjz2IHFJeXNhBusXvv0/lGlR7foYlqFoV4RyWUHfcZOsAzuvXkXzDbDasumZsJYm6vT8a0XxZjf/2MjNGZabKPrWZvaqbX3diyZ32sGUXD6+XlujQ/br4NwdGbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8AGyZQhK2lEk0Twls/Xi+KDGtEqC1m+d4/QOuoH8LqKja8RRJ5plW7+3prcnK/ebgXELukgTpPcv1fcYoy2oucqGHkJc+QUJ4CmyGoABY72sCeTDDJvh8HKJTvaZVwUhmSpQ4iZvSQog9HO206eNRLfoaaKCAlEWLvEaqPEajY/yk3sRMLYVtt6qOIo4yLWQuHwJKFphqx9M3Do/r+cJAbOL/prK5732s/1+vjNeOSbxPkOZFy5nEnERq3ibBR8K9MNt34TD1MacaxJq18s=",
-        "Expiration": "2020-09-09T16:53:20+08:00"
-      };
-    },
-  );
+  late final OSSFederationCredentialProvider _provider =
+      OSSAuthCredentialProvider(stsTokenUrl: _stsTokenUrl);
   late OSSClient _client;
+
+  final String _stsTokenUrl = 'http://192.168.0.130:10100/sts/getsts';
+  final String _bucketName = 'example-bucket-shanghai';
+  final String _endpoint = 'http://oss-cn-shanghai.aliyuncs.com';
 
   @override
   void initState() {
     _client = OSSClient(
-      endpoint: 'oss-cn-shanghai.aliyuncs.com',
+      endpoint: _endpoint,
       credentialProvider: _provider,
     );
     super.initState();
@@ -44,25 +41,93 @@ class _HomePageState extends State<HomePage> {
         title: const Text('aliyun oss'),
       ),
       body: Center(
-        child: TextButton.icon(
-          onPressed: () {
-            _upload(context);
-          },
-          icon: const Icon(Icons.cloud_upload),
-          label: const Text('upload'),
+        child: ListView(
+          children: [
+            ListCard(
+              title: 'getStsToken',
+              onTap: () {
+                _getStsToken();
+              },
+            ),
+            ListCard(
+              title: 'OSSManager - getStsToken',
+              onTap: () {
+                _managerGetStsToken();
+              },
+            ),
+            ListCard(
+              title: 'putObject',
+              onTap: () {
+                _putObject(context);
+              },
+            ),
+            ListCard(
+              title: 'postObject',
+              onTap: () {
+                _postObject(context);
+              },
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Future<void> _upload(BuildContext context) async {
-    final dir = await getApplicationDocumentsDirectory();
-    print('=====dir: $dir');
-    final path = dir.path;
-    final filePath = '$path/redmi-note7.jpg';
-    File file = File(filePath);
+  Future<void> _getStsToken() async {
+    try {
+      final token = await _provider.getToken();
+      print('===get stsToken success==$token');
+    } catch (e) {
+      // error
+      print('===getStsToken error==$e');
+    }
+  }
 
-    final bytes = await file.readAsBytes();
-    _client.postObjectWithBytes(bytes, 'bucket_name', 'redmi-note7.jpg');
+  Future<void> _managerGetStsToken() async {
+    try {
+      final token =
+          await OSSManager().defaultClient.credentialProvider.getToken();
+      print('===get stsToken success==$token');
+    } catch (e) {
+      // error
+      print('===getStsToken error==$e');
+    }
+  }
+
+  Future<void> _putObject(BuildContext context) async {
+    final picker = ImagePicker();
+    try {
+      final file = await picker.pickImage(source: ImageSource.gallery);
+      final imagePath = file?.path;
+      if (imagePath?.isEmpty ?? true) {
+        return;
+      }
+      print('=====pick image==path:$imagePath');
+      final date = DateTime.now();
+      final objectKey = 'example_${date.millisecondsSinceEpoch}.jpg';
+      _client.putObjectWithFile(File(imagePath!),
+          bucketName: _bucketName, objectKey: objectKey);
+    } catch (e) {
+      // error
+    }
+  }
+
+  Future<void> _postObject(BuildContext context) async {
+    final picker = ImagePicker();
+    try {
+      final file = await picker.pickImage(source: ImageSource.gallery);
+      final imagePath = file?.path;
+      if (imagePath?.isEmpty ?? true) {
+        return;
+      }
+      print('=====pick image==path:$imagePath');
+      final date = DateTime.now();
+      final objectKey = 'example_${date.millisecondsSinceEpoch}.jpg';
+      final res = await _client.postObjectWithFile(
+          File(imagePath!), _bucketName, objectKey);
+      print('====postObject==$res');
+    } catch (e) {
+      // error
+    }
   }
 }

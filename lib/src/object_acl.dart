@@ -25,8 +25,6 @@ extension ObjectACLExtension on ObjectACL {
         return 'private';
       case ObjectACL.inherited:
         return 'default';
-      default:
-        return '';
     }
   }
 }

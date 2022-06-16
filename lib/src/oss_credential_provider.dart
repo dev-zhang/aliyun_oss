@@ -1,66 +1,57 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
 
-import 'package:aliyun_oss/src/oss_credential.dart';
+import 'package:aliyun_oss/src/oss_federation_token.dart';
 
-typedef FederationCredentialFetcher = Future<Map<String, dynamic>?> Function(
-    String authServerUrl);
+import 'dio_util.dart';
 
-class OSSAuthCredentialProvider {
-  OSSAuthCredentialProvider.init({
-    required String authServerUrl,
-    required FederationCredentialFetcher fetcher,
-  })  : assert(authServerUrl.isNotEmpty),
-        _authServerUrl = authServerUrl,
-        _fetcher = fetcher;
+typedef FederationTokenGetter = Future<OSSFederationToken> Function();
 
-  final String _authServerUrl;
-  final FederationCredentialFetcher _fetcher;
+class OSSFederationCredentialProvider {
+  OSSFederationCredentialProvider({required this.tokenGetter});
 
-  OSSCredential? _cachedCredential;
+  OSSFederationToken? _cachedToken;
+  final FederationTokenGetter tokenGetter;
 
-  Future<OSSCredential> getCredential() async {
-    OSSCredential? validCredential;
-    if (_cachedCredential == null) {
-      _cachedCredential = await _fetchCredential();
+  Future<OSSFederationToken> getToken() async {
+    if (_cachedToken == null) {
+      _cachedToken = await tokenGetter();
     } else {
-      if (_checkExpire(_cachedCredential!.expiration)) {
-        _cachedCredential = await _fetchCredential();
+      if (isExpired) {
+        _cachedToken = await tokenGetter();
       }
     }
-    validCredential = _cachedCredential;
-    if (validCredential == null) {
-      return Future.error(HttpException('获取sts token失败'));
-    }
-    return validCredential;
+    return _cachedToken!;
   }
 
-  Future<OSSCredential> _fetchCredential() async {
-    final Map<String, dynamic> json =
-        await (_fetcher(_authServerUrl) as FutureOr<Map<String, dynamic>>);
-
-    final expiration = json['Expiration'].replaceAll(' UTC', '');
-    OSSCredential credential = OSSCredential(
-      accessKeyId: json['AccessKeyId'],
-      accessKeySecret: json['AccessKeySecret'],
-      securityToken: json['SecurityToken'],
-      expiration: expiration,
-    );
-    return credential;
-  }
-
-  // 检查是否过期
-  bool _checkExpire(String? expiration) {
-    if (expiration?.isEmpty ?? true) {
-      return false;
+  /// 是否已过期
+  bool get isExpired {
+    if (_cachedToken == null) {
+      return true;
     }
-    final expirationDate = DateTime.parse(expiration!);
+
+    final expirationDate =
+        DateTime.parse(_cachedToken!.expirationTimeInGMTFormat);
     final difference = expirationDate.difference(DateTime.now().toUtc());
 
-    // 剩余时间小于两分钟，则需要刷新
-    if (difference.inMinutes <= 2) {
+    /* if this token will be expired after less than 2min, we abort it in case of when request arrived oss server,
+               it's expired already. */
+    // 剩余时间小于5分钟，则需要刷新
+    if (difference.inMinutes <= 5) {
       return true;
     }
     return false;
   }
+}
+
+class OSSAuthCredentialProvider extends OSSFederationCredentialProvider {
+  OSSAuthCredentialProvider({
+    required String stsTokenUrl,
+  })  : assert(stsTokenUrl.isNotEmpty),
+        super(tokenGetter: () async {
+          final dio = DioUtil.getDio()!;
+          final res = await dio.get(stsTokenUrl);
+          final data = jsonDecode(res.data);
+          return OSSFederationToken.fromJson(data);
+        });
 }

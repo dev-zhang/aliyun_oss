@@ -1,18 +1,20 @@
-import 'dart:convert';
 import 'dart:io';
 
+import 'package:aliyun_oss/aliyun_oss.dart';
 import 'package:aliyun_oss/src/dio_util.dart';
-import 'package:aliyun_oss/src/oss_client.dart';
-import 'package:aliyun_oss/src/oss_credential_provider.dart';
+import 'package:aliyun_oss/src/oss_federation_token.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final OSSAuthCredentialProvider _provider = OSSAuthCredentialProvider.init(
-    authServerUrl: 'https://xxx/getStsToken',
-    fetcher: (authServerUrl) async {
+  final OSSFederationCredentialProvider _provider =
+      OSSFederationCredentialProvider(
+    tokenGetter: () async {
       final dio = DioUtil.getDio()!;
-      final r = await dio.post('https://xx/getStsToken');
-      return jsonDecode(r.data);
+      final params = <String, dynamic>{};
+      params['session_name'] = 'roleSessionName';
+      final r =
+          await dio.post('http://192.168.0.130:10100/sts/getsts', data: params);
+      return OSSFederationToken.fromJson(r.data);
     },
   );
   final OSSClient _client = OSSClient(
