@@ -2,7 +2,7 @@
  * File Created: 2022-06-14 14:03:05
  * Author: ZhangYu (devzhangyu@163.com)
  * -----
- * Last Modified: 2022-06-16 10:35:42
+ * Last Modified: 2022-06-17 17:22:03
  * Modified By: ZhangYu (devzhangyu@163.com>)
  */
 
@@ -103,13 +103,46 @@ extension OSSClientObject on OSSClient {
   }
 
   /// RESTFul API: HeadObject
-  Future<Object> headObject() async {
-    throw UnimplementedError();
+  Future<Object> headObject({
+    required String bucketName,
+    required String objectKey,
+  }) async {
+    final request = OSSRequest(
+      endpoint: endpoint,
+      bucketName: bucketName,
+      objectKey: objectKey,
+      httpMethod: 'HEAD',
+    );
+    await _signer.sign(request);
+    _dio.head(
+      request.url,
+      options: Options(
+        headers: request.headers,
+      ),
+    );
+    return '';
   }
 
   /// RESTFul API: GetObject
-  Future<Object> getObject() async {
-    throw UnimplementedError();
+  Future<Object> getObject({
+    required String bucketName,
+    required String objectKey,
+  }) async {
+    final request = OSSRequest(
+      endpoint: endpoint,
+      bucketName: bucketName,
+      objectKey: objectKey,
+      httpMethod: 'GET',
+      contentType: 'image/jpeg',
+    );
+    await _signer.sign(request);
+    _dio.get(
+      request.url,
+      options: Options(
+        headers: request.headers,
+      ),
+    );
+    return '';
   }
 
   /// RESTFul API: GetObjectACL

@@ -7,7 +7,6 @@ import 'package:aliyun_oss_example/oss_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:aliyun_oss/aliyun_oss.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -56,6 +55,12 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListCard(
+              title: 'headObject',
+              onTap: () {
+                _headObject(context);
+              },
+            ),
+            ListCard(
               title: 'putObject',
               onTap: () {
                 _putObject(context);
@@ -65,6 +70,12 @@ class _HomePageState extends State<HomePage> {
               title: 'postObject',
               onTap: () {
                 _postObject(context);
+              },
+            ),
+            ListCard(
+              title: 'getObject',
+              onTap: () {
+                _getObject(context);
               },
             ),
           ],
@@ -91,6 +102,15 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       // error
       print('===getStsToken error==$e');
+    }
+  }
+
+  Future<void> _headObject(BuildContext context) async {
+    try {
+      const objectKey = 'example_1655451016408.jpg';
+      _client.headObject(bucketName: _bucketName, objectKey: objectKey);
+    } catch (e) {
+      // error
     }
   }
 
@@ -126,6 +146,15 @@ class _HomePageState extends State<HomePage> {
       final res = await _client.postObjectWithFile(
           File(imagePath!), _bucketName, objectKey);
       print('====postObject==$res');
+    } catch (e) {
+      // error
+    }
+  }
+
+  Future<void> _getObject(BuildContext context) async {
+    try {
+      const objectKey = 'example_1655451016408.jpg';
+      _client.getObject(bucketName: _bucketName, objectKey: objectKey);
     } catch (e) {
       // error
     }

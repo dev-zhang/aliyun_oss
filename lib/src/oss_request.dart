@@ -2,7 +2,7 @@
  * File Created: 2022-06-15 16:38:56
  * Author: ZhangYu (devzhangyu@163.com)
  * -----
- * Last Modified: 2022-06-17 15:50:13
+ * Last Modified: 2022-06-17 16:36:05
  * Modified By: ZhangYu (devzhangyu@163.com>)
  */
 
@@ -27,8 +27,7 @@ class OSSRequest {
     this.file,
     this.fileBytes,
     Map<String, dynamic>? headers,
-  })  : headers = headers ?? <String, dynamic>{},
-        assert(file != null || fileBytes != null) {
+  }) : headers = headers ?? <String, dynamic>{} {
     if (httpMethod == 'PUT' || httpMethod == 'POST') {
       contentType = OSSUtil.determineMimeType(
         filePath: file?.path,
