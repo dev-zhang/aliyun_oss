@@ -2,7 +2,7 @@
  * File Created: 2022-06-15 16:38:56
  * Author: ZhangYu (devzhangyu@163.com)
  * -----
- * Last Modified: 2022-06-16 10:24:12
+ * Last Modified: 2022-06-17 15:50:13
  * Modified By: ZhangYu (devzhangyu@163.com>)
  */
 
@@ -59,6 +59,8 @@ class OSSRequest {
   final Uint8List? fileBytes;
 
   Map<String, dynamic> headers;
+
+  Map<String, dynamic> get params => <String, dynamic>{};
 
   String get fullUrl => _fullUri.toString();
 
